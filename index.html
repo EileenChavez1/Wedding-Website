@@ -354,9 +354,12 @@
     font-variant: small-caps;
     letter-spacing: 0.1em;
     font-size: 0.9rem;
+    font-family: 'EB Garamond', serif;
     color: var(--ivory);
     background: var(--forest);
     text-decoration:none;
+    border: none;
+    cursor: pointer;
     transition: background 0.25s ease;
   }
   .fund-btn:hover{ background: var(--rust); }
@@ -368,6 +371,124 @@
     opacity: 0.75;
     font-style: italic;
   }
+
+  /* ---------- FUND MODAL ---------- */
+  .fund-modal-overlay{
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    background: rgba(36,28,16,0.72);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 5vh 5vw;
+  }
+  .fund-modal-overlay[hidden]{ display:none; }
+
+  .fund-modal{
+    position:relative;
+    background: var(--ivory);
+    border: 1px solid var(--gold);
+    box-shadow: inset 0 0 0 5px rgba(217,184,118,0.25), 0 30px 60px rgba(0,0,0,0.5);
+    max-width: 420px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 2.4rem 2rem 2rem;
+    text-align:center;
+  }
+  .fund-modal h3{ font-size: 1.6rem; margin-top: 0.4rem; margin-bottom: 1.4rem; }
+  .fund-modal-close{
+    position:absolute;
+    top: 0.7rem; right: 0.9rem;
+    background:none;
+    border:none;
+    font-size: 1.6rem;
+    line-height:1;
+    color: var(--forest);
+    cursor:pointer;
+  }
+  .fund-modal-close:hover{ color: var(--rust); }
+
+  .amount-grid{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+  }
+  .amount-chip{
+    padding: 0.7rem 0.4rem;
+    font-family: 'EB Garamond', serif;
+    font-size: 1rem;
+    background: var(--ivory-deep);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    color: var(--forest-deep);
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+  .amount-chip:hover{ border-color: var(--rust); }
+  .amount-chip.selected{
+    background: var(--forest);
+    border-color: var(--forest);
+    color: var(--ivory);
+  }
+
+  .amount-custom{
+    margin-top: 1.3rem;
+    text-align:left;
+  }
+  .amount-custom label{
+    display:block;
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    font-size: 0.85rem;
+    color: var(--forest-deep);
+    margin-bottom: 0.4rem;
+  }
+  .amount-custom input{
+    width:100%;
+    font-family: 'EB Garamond', serif;
+    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+    background: var(--ivory-deep);
+    border: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .amount-custom input:focus{ border-color: var(--rust); }
+
+  .fund-modal-actions{
+    display:flex;
+    flex-direction:column;
+    gap: 0.7rem;
+    margin-top: 1.6rem;
+  }
+  .fund-pay-btn{
+    display:block;
+    padding: 0.75rem 1.2rem;
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+    font-size: 0.95rem;
+    text-decoration:none;
+    text-align:center;
+    color: var(--ivory);
+    transition: opacity 0.2s ease, background 0.2s ease;
+  }
+  .fund-pay-btn.venmo{ background: #3D95CE; }
+  .fund-pay-btn.cashapp{ background: #00C244; }
+  .fund-pay-btn[aria-disabled="true"]{
+    background: #C9C0AF;
+    pointer-events: none;
+    opacity: 0.75;
+  }
+  .fund-pay-btn:not([aria-disabled="true"]):hover{ opacity: 0.88; }
+
+  .fund-modal-hint{
+    margin-top: 0.9rem;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--wine);
+    opacity: 0.85;
+  }
+  .fund-modal-hint.ok{ color: var(--forest); opacity: 0.75; }
 
   /* ---------- NAV ---------- */
   body{ padding-top: 0; }
@@ -448,6 +569,24 @@
     section, footer{ scroll-margin-top: 3.6rem; }
   }
 
+  .audio-toggle{
+    position: fixed;
+    right: 1.4rem;
+    bottom: 1.4rem;
+    z-index: 150;
+    width: 3rem; height: 3rem;
+    border-radius: 50%;
+    border: 1px solid var(--gold);
+    background: var(--forest-deep);
+    color: var(--gold-soft);
+    font-size: 1.15rem;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 6px 18px rgba(36,28,16,0.35);
+    transition: transform 0.25s ease, background 0.25s ease;
+  }
+  .audio-toggle:hover{ background: var(--forest); transform: translateY(-2px); }
+  .audio-toggle[hidden]{ display:none; }
 
   /* ---------- MAP EMBED ---------- */
   .map-embed{
@@ -748,27 +887,54 @@
 <section id="fondo">
   <div class="section-head">
     <div class="eyebrow">Con Cariño</div>
-    <h2>Fondo de Luna de Miel</h2>
+    <h2>Regalos</h2>
   </div>
 
   <div class="fund-wrap">
     <div class="fund-card">
       <span class="sprig">✦</span>
-      <h3>Venmo</h3>
-      <p>No tenemos mesa de regalos — su presencia es el mejor regalo. Si desean contribuir a nuestra luna de miel, pueden hacerlo aquí.</p>
-      <a class="fund-btn" href="https://venmo.com/u/mirandm22" target="_blank" rel="noopener">@mirandm22</a>
+      <h3>Fondo de Luna de Miel</h3>
+      <p>No tenemos mesa de regalos — su presencia es el mejor regalo. Si desean contribuir a nuestra luna de miel, elijan un monto y el método que prefieran.</p>
+      <button class="fund-btn" id="fund-open-btn" type="button">Elegir Monto</button>
     </div>
     <div class="fund-card">
       <span class="sprig">✦</span>
-      <h3>Cash App</h3>
-      <p>También pueden contribuir a través de Cash App si lo prefieren.</p>
-      <a class="fund-btn" href="https://cash.app/$eileenhc0607" target="_blank" rel="noopener">$eileenhc0607</a>
+      <h3>Mesa de Regalos Amazon</h3>
+      <p>Si prefieren un regalo tradicional, también creamos una lista en Amazon.</p>
+      <a class="fund-btn" href="https://www.amazon.com/wedding/share/EILEENandMONICA" target="_blank" rel="noopener">Ver Lista →</a>
     </div>
   </div>
 
   <p class="fund-note">También aceptamos con gusto contribuciones en efectivo el día del evento.<br>Gracias por ser parte de este día tan especial para nosotras.</p>
 
 </section>
+
+<div class="fund-modal-overlay" id="fund-modal" hidden>
+  <div class="fund-modal" role="dialog" aria-modal="true" aria-labelledby="fund-modal-title">
+    <button class="fund-modal-close" id="fund-modal-close" type="button" aria-label="Cerrar">×</button>
+    <div class="eyebrow">Fondo de Luna de Miel</div>
+    <h3 id="fund-modal-title">Elijan un Monto</h3>
+
+    <div class="amount-grid">
+      <button class="amount-chip" type="button" data-amount="25">$25</button>
+      <button class="amount-chip" type="button" data-amount="50">$50</button>
+      <button class="amount-chip" type="button" data-amount="100">$100</button>
+      <button class="amount-chip" type="button" data-amount="150">$150</button>
+    </div>
+
+    <div class="amount-custom">
+      <label for="custom-amount">O ingresen su propio monto</label>
+      <input type="number" id="custom-amount" min="1" step="1" placeholder="$">
+    </div>
+
+    <div class="fund-modal-actions">
+      <a class="fund-pay-btn venmo" id="pay-venmo" href="#" target="_blank" rel="noopener" aria-disabled="true">Pagar con Venmo</a>
+      <a class="fund-pay-btn cashapp" id="pay-cashapp" href="#" target="_blank" rel="noopener" aria-disabled="true">Pagar con Cash App</a>
+    </div>
+    <p class="fund-modal-hint" id="fund-modal-hint">Elijan un monto para continuar.</p>
+  </div>
+</div>
+
 
 <footer>
   <div class="monogram-sm">E &amp; M</div>
@@ -801,6 +967,100 @@
     }
     tick();
     setInterval(tick, 1000);
+  })();
+
+  // ---- Honeymoon fund modal ----
+  (function(){
+    var openBtn = document.getElementById('fund-open-btn');
+    var overlay = document.getElementById('fund-modal');
+    var closeBtn = document.getElementById('fund-modal-close');
+    var chips = document.querySelectorAll('.amount-chip');
+    var customInput = document.getElementById('custom-amount');
+    var venmoBtn = document.getElementById('pay-venmo');
+    var cashappBtn = document.getElementById('pay-cashapp');
+    var hint = document.getElementById('fund-modal-hint');
+
+    var VENMO_USER = 'mirandm22';
+    var CASHAPP_USER = 'eileenhc0607';
+    var NOTE = encodeURIComponent('Fondo de Luna de Miel - Eileen & Monica');
+
+    var selectedAmount = null;
+
+    function openModal(){
+      overlay.hidden = false;
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(){
+      overlay.hidden = true;
+      document.body.style.overflow = '';
+    }
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', function(e){
+      if (e.target === overlay) closeModal();
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && !overlay.hidden) closeModal();
+    });
+
+    function selectChip(chip){
+      chips.forEach(function(c){ c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      customInput.value = '';
+      setAmount(parseFloat(chip.dataset.amount));
+    }
+
+    chips.forEach(function(chip){
+      chip.addEventListener('click', function(){ selectChip(chip); });
+    });
+
+    customInput.addEventListener('input', function(){
+      chips.forEach(function(c){ c.classList.remove('selected'); });
+      var val = parseFloat(customInput.value);
+      setAmount(isNaN(val) || val <= 0 ? null : val);
+    });
+
+    function setAmount(amount){
+      selectedAmount = amount;
+      if (amount){
+        venmoBtn.href = 'https://venmo.com/' + VENMO_USER + '?txn=pay&amount=' + amount + '&note=' + NOTE;
+        cashappBtn.href = 'https://cash.app/$' + CASHAPP_USER + '/' + amount;
+        venmoBtn.removeAttribute('aria-disabled');
+        cashappBtn.removeAttribute('aria-disabled');
+        hint.textContent = 'Se abrirá la app o el sitio para completar su regalo de $' + amount + '.';
+        hint.classList.add('ok');
+      } else {
+        venmoBtn.href = '#';
+        cashappBtn.href = '#';
+        venmoBtn.setAttribute('aria-disabled', 'true');
+        cashappBtn.setAttribute('aria-disabled', 'true');
+        hint.textContent = 'Elijan un monto para continuar.';
+        hint.classList.remove('ok');
+      }
+    }
+  })();
+
+  // ---- Audio toggle ----
+  (function(){
+    var audio = document.getElementById('invite-audio');
+    var audioToggle = document.getElementById('audio-toggle');
+
+    audioToggle.addEventListener('click', function(){
+      if (audio.paused){
+        audio.play().catch(function(){ /* file may not be added yet */ });
+        audioToggle.classList.add('playing');
+        audioToggle.textContent = '❚❚';
+      } else {
+        audio.pause();
+        audioToggle.classList.remove('playing');
+        audioToggle.textContent = '♪';
+      }
+    });
+    audio.addEventListener('ended', function(){
+      audioToggle.classList.remove('playing');
+      audioToggle.textContent = '♪';
+    });
   })();
 
   // ---- Mobile nav toggle ----
